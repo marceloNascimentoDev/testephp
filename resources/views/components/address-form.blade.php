@@ -11,6 +11,7 @@
 														type="text" 
 														class="form-control" 
 														name="street"
+														maxlength="80"
 														required
 														placeholder="Av: brasilia"
 														value="{{isset($addressInputs) ? $addressInputs->street : null }}"
@@ -25,6 +26,7 @@
 														class="form-control number" 
 														name="number" 
 														required
+														maxlength="80"
 														placeholder="123"
 														value="{{isset($addressInputs) ? $addressInputs->number : null }}"
 													>
@@ -51,6 +53,7 @@
 														class="form-control onlytext" 
 														name="city" 
 														required
+														maxlength="50"
 														placeholder="Caraguatatuba"
 														value="{{isset($addressInputs) ? $addressInputs->city : null }}"
 													>

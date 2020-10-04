@@ -15,13 +15,6 @@ class AddressInputsRepository
         $this->addressInput = $addressInput;
     }
 
-    public function destroy($id)
-    {
-        $pets = $this->pets->findOrfail($id);
-
-        return $pets->delete();
-    }
-
     public function store($inputs)
     {
         return $this->addressInput->create($inputs);

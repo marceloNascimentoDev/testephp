@@ -8,6 +8,7 @@
                 name="name" 
                 type="text" 
                 class="form-control onlytext" 
+                maxlength="80"
                 required 
                 placeholder="Andrew..." 
                 value="{{isset($personalInputs) ? $personalInputs->name : null }}"

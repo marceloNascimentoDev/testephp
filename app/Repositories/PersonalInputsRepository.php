@@ -15,14 +15,6 @@ class PersonalInputsRepository
         $this->personalInput = $personalInput;
     }
 
-    public function destroy($id)
-    {
-        $pets = $this->pets->findOrfail($id);
-
-        return $pets->delete();
-    }
-
-
     public function store($inputs)
     {
         return $this->personalInput->create($inputs);
