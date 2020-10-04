@@ -6,108 +6,99 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Str;
 use App\Models\FormSession;
+use App\Repositories\PersonalInputsRepository;
+use App\Repositories\AddressInputsRepository;
+use App\Repositories\ContactInputsRepository;
 
 class FormSessionController extends Controller
 {
+    private $formSession;
     private $ipAddress;
+    private $personalInputsRepository;
+    private $addressInputsRepository;
+    private $contactInputsRepository;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct(
+        PersonalInputsRepository $personalInputsRepository,
+        AddressInputsRepository $addressInputsRepository,
+        ContactInputsRepository $contactInputsRepository
+    ) {
+        $this->personalInputsRepository = $personalInputsRepository;
+        $this->addressInputsRepository = $addressInputsRepository;
+        $this->contactInputsRepository = $contactInputsRepository;
+    }
+
     public function index(Request $request)
     {
         return $this->store($request);
         // return redirect()->route('form.store');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $success = true;
         \DB::beginTransaction();
 
         try {
-            $inputs = [
-                'form_token' => Str::random(40),
-                'ip_address' => $request->ip()
-            ];
-
+            $formToken = Str::random(40);
+            $inputs = [ 'form_token' => $formToken,  'ip_address' => $request->ip() ];
             $response = FormSession::create($inputs);
+            $week = 420;
+            $cookie = cookie('form_token', $formToken, $week);
             \DB::commit();
-
-            return Response()
-                    ->Json([
-                        'success' => true
-                    ], 200)
-                    ->header('form_token', $inputs['form_token']);
+            return response()->view('form')->cookie($cookie);
         } catch (\Throwable $th) {
-            \DB::rollback();
-            return Response()
-                ->Json([
-                    'success' => false
-                ], 400);
+
+            echo $th;
         }
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+    public function findSession(Request $request) {
+        $ipAddress = $request->ip();
+        $formToken = $request->cookie('form_token');
+
+        return FormSession::where('ip_address', $ipAddress)->where('form_token', $formToken)->first();
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+    public function saveData(Request $request) {
+        // $payload = [
+        //     'type' => 'contact', 
+        //     'items' => [
+        //         'phone' => '(12) 38874213',
+        //         'mobile_phone' => '(12) 129966309012'
+        //     ]
+        // ];
+
+        $payload = $request->all();
+
+        $formSession = $this->findSession($request);
+
+        $success = $this->save($payload, $formSession);
+
+        return Response()->json([
+            'success' => $success
+        ], $success ? 200 : 400);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+    private function save($payload, $formSession) {
+        switch ($payload['type']) {
+            case 'personal':
+                return $this->personalInputsRepository->save($payload, $formSession);
+            break;
+            
+            case 'address':
+                return $this->addressInputsRepository->save($payload, $formSession);
+            break;
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            case 'contact':
+                return $this->contactInputsRepository->save($payload, $formSession);
+            break;
+        }
     }
 }

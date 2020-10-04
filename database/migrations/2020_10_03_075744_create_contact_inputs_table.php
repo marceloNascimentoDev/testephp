@@ -16,8 +16,8 @@ class CreateContactInputsTable extends Migration
         Schema::create('contact_inputs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('form_session_id');
-            $table->string('name');
-            $table->date('birthday');
+            $table->string('phone');
+            $table->string('mobile_phone');
             $table->timestamps();
             $table->softDeletes();
 

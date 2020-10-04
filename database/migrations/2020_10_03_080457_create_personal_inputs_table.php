@@ -17,7 +17,7 @@ class CreatePersonalInputsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('form_session_id');
             $table->string('name');
-            $table->date('birthday');
+            $table->string('birthday');
             $table->timestamps();
             $table->softDeletes();
 

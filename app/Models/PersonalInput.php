@@ -9,15 +9,13 @@ class PersonalInput extends Model
 {
     use SoftDeletes;
 
-    use Notifiable;
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'form_token', 'ip_address'
+        'form_session_id', 'name', 'birthday'
     ];
 
 }

@@ -1,10 +1,10 @@
-<div class="tab-pane" id="about">
+<div class="tab-pane" id="personal">
     <div class="row">
         <h5 class="info-text"> Conte-nos um pouco sobre você.</h5>
         <div class="col-sm-6">
             <div class="form-group">
                 <label>Nome completo <small>(obrigatório)</small></label>
-                <input name="firstname" type="text" class="form-control onlytext" placeholder="Andrew..." value="marcelo">
+                <input name="name" type="text" class="form-control onlytext" required placeholder="Andrew..." value="marcelo">
             </div>
         </div>
 

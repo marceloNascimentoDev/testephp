@@ -26,7 +26,7 @@
                                     </div>
                                     <ul>
                                         <li>
-                                            <a href="#about" data-toggle="tab">
+                                            <a href="#personal" data-toggle="tab">
                                                 <div class="icon-circle">
                                                     <i class="ti-user"></i>
                                                 </div>
@@ -58,8 +58,8 @@
                                 </div>
                                 <div class="wizard-footer">
                                     <div class="pull-right">
-                                        <input type='button' class='btn btn-next btn-fill btn-warning btn-wd' name='next' value='Avançar' />
-                                        <input type='button' class='btn btn-finish btn-fill btn-warning btn-wd' name='finish' value='Finalizar' />
+                                        <input type='button' class='btn btn-next btn-fill btn-warning btn-wd btn--save' name='next' value='Avançar' />
+                                        <input type='button' class='btn btn-finish btn-fill btn-warning btn-wd btn--save' name='finish' value='Finalizar' />
                                     </div>
 
                                     <div class="pull-left">
@@ -134,6 +134,67 @@
             }
 
             fillStates();
+        })
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttonSubmit = $('.btn--save');
+            $(buttonSubmit).click((e) => { 
+                let container = $('.tab-pane.active');
+                savePartialForm(container)
+            });
+
+            const sleep = (ms) => {
+                 return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            const isValid = (inputs) => {
+                let valid = true;
+                $(inputs).each((index, element) => {
+                    let invalidInput = $(element).attr('aria-invalid') == 'true' || $(element).val() == '';
+                    if(invalidInput) {
+                        valid = false;
+                    }
+                });
+
+                return valid;
+            }
+
+            const savePartialForm = async (container) => {
+                await sleep(1000)
+                let inputs = $(container).find('input, select');
+                let items = mapToJson(inputs)
+                const valid = isValid(inputs)
+                if(valid) {
+                    let payload = {
+                        type: $(container).attr('id'),
+                        items
+                    }
+                    
+                    let request = await reqSavePartial(payload);
+                    console.log(request)
+                }
+            }
+
+            const reqSavePartial = (payload) => {
+                return new Promise((resolve, reject) => {
+                    $.post(main_url + '/save', payload,(data) =>  {
+                        resolve(data);       
+                    });
+                })
+            }
+
+            const mapToJson = (inputs) => {
+                let json = {};
+                $(inputs).each((index, element) => {
+                    let name = $(element).attr('name');
+                    let value = $(element).val();
+                    json[name] = value;
+                });
+                
+                return json;
+            }
         })
     </script>
 @endsection

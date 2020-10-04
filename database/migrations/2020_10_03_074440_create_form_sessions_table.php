@@ -18,7 +18,6 @@ class CreateFormSessionsTable extends Migration
             $table->string('form_token')->unique();
             $table->string('ip_address');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
