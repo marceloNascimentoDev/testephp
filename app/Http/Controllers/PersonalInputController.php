@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\PersonalInput;
 
 class PersonalInputController extends Controller
 {
@@ -23,7 +24,7 @@ class PersonalInputController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -34,7 +35,8 @@ class PersonalInputController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        print_r("a");
+        die;
     }
 
     /**

@@ -9,8 +9,6 @@ class FormSession extends Model
 {
     use SoftDeletes;
 
-    use Notifiable;
-
     /**
      * The attributes that are mass assignable.
      *

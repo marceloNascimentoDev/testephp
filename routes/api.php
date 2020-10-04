@@ -13,8 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::resource('form', 'FormSessionController');
+
 Route::group(['prefix' => 'session'], function () {
+    Route::resource('personal-info', 'PersonalInputController');
     Route::resource('contact-input', 'ContactInputController');
+
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

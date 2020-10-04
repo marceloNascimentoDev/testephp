@@ -4,16 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Str;
+use App\Models\FormSession;
+
 class FormSessionController extends Controller
 {
+    private $ipAddress;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return $this->store($request);
+        // return redirect()->route('form.store');
     }
 
     /**
@@ -34,7 +39,31 @@ class FormSessionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $success = true;
+        \DB::beginTransaction();
+
+        try {
+            $inputs = [
+                'form_token' => Str::random(40),
+                'ip_address' => $request->ip()
+            ];
+
+            $response = FormSession::create($inputs);
+            \DB::commit();
+
+            return Response()
+                    ->Json([
+                        'success' => true
+                    ], 200)
+                    ->header('form_token', $inputs['form_token']);
+        } catch (\Throwable $th) {
+            \DB::rollback();
+            return Response()
+                ->Json([
+                    'success' => false
+                ], 400);
+        }
+
     }
 
     /**
