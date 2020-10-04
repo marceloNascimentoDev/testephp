@@ -108,7 +108,16 @@ class FormSessionController extends Controller
     }
 
     public function complete(Request $request) {
-        $session = $this->findSession($request);
-        $session->delete();
+        try {
+            $success = true;
+            $session = $this->findSession($request);
+            $session->delete();
+        } catch (\Throwable $th) {
+            $success = false;
+        }
+
+        return Response()->json([
+            'success' => $success
+        ], $success ? 200 : 400);
     }
 }

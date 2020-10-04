@@ -13,7 +13,4 @@
 
 Route::get('/', 'FormSessionController@index');
 Route::post('save','FormSessionController@saveData');
-Route::get('/complete', 'FormSessionController@complete');
-// Route::get('/', function () {
-//     return view('form');
-// });
+Route::post('/complete', 'FormSessionController@complete');

@@ -68,7 +68,7 @@
                                 <div class="wizard-footer">
                                     <div class="pull-right">
                                         <input type='button' class='btn btn-next btn-fill btn-warning btn-wd btn--save' name='next' value='Avançar' />
-                                        <input type='button' class='btn btn-finish btn-fill btn-warning btn-wd' name='finish' value='Finalizar' />
+                                        <input type='button' class='btn btn-finish btn-fill btn-warning btn-wd btn--finish' name='finish' value='Finalizar' />
                                     </div>
 
                                     <div class="pull-left">
@@ -209,5 +209,23 @@
                 return json;
             }
         })
+    </script>
+
+    <script>
+        $('.btn--finish').click((e) => { 
+            completeRegister();
+        });
+
+        const completeRegister = () => {
+            $.post(main_url + '/complete', (data) => {
+                if(data.success) {
+                    alert('Registro concluido com sucesso');       
+                } else {
+                    alert('Ocorreu um erro ao completar seu cadastro, tente novamente mais tarde');
+                }
+
+                window.location.reload()
+            });
+        }
     </script>
 @endsection
