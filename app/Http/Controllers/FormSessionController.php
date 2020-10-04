@@ -35,8 +35,19 @@ class FormSessionController extends Controller
 
     public function index(Request $request)
     {
+        $haveCookie = $request->cookie('form_token');
+        if($haveCookie) {
+            $formSession = $this->findSession($request);
+            if($formSession) {
+                $personalInputs = $formSession->personalInputs;
+                $addressInputs = $formSession->addressInputs;
+                $contactInputs = $formSession->contactInputs;
+                return view('form', compact('personalInputs', 'addressInputs', 'contactInputs'));
+            }
+
+        }
+
         return $this->store($request);
-        // return redirect()->route('form.store');
     }
 
     public function store(Request $request)
@@ -50,7 +61,9 @@ class FormSessionController extends Controller
             $response = FormSession::create($inputs);
             $week = 420;
             $cookie = cookie('form_token', $formToken, $week);
+            
             \DB::commit();
+
             return response()->view('form')->cookie($cookie);
         } catch (\Throwable $th) {
 
@@ -67,14 +80,6 @@ class FormSessionController extends Controller
     }
 
     public function saveData(Request $request) {
-        // $payload = [
-        //     'type' => 'contact', 
-        //     'items' => [
-        //         'phone' => '(12) 38874213',
-        //         'mobile_phone' => '(12) 129966309012'
-        //     ]
-        // ];
-
         $payload = $request->all();
 
         $formSession = $this->findSession($request);
@@ -100,5 +105,10 @@ class FormSessionController extends Controller
                 return $this->contactInputsRepository->save($payload, $formSession);
             break;
         }
+    }
+
+    public function complete(Request $request) {
+        $session = $this->findSession($request);
+        $session->delete();
     }
 }

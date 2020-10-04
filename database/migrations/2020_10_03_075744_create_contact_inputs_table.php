@@ -21,7 +21,7 @@ class CreateContactInputsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('form_session_id')->references('id')->on('form_sessions');
+            $table->foreign('form_session_id')->references('id')->on('form_sessions')->onDelete('cascade');
         });
     }
 

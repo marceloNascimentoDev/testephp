@@ -49,17 +49,26 @@
                                                 Contato
                                             </a>
                                         </li>
+                                        <li>
+                                            <a href="#finish" data-toggle="tab">
+                                                <div class="icon-circle">
+                                                    <i class="ti-check"></i>
+                                                </div>
+                                                Concluir
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="tab-content" style="min-height: 0">
                                     @include('components.personal-form')   
                                     @include('components.address-form')
                                     @include('components.contact-form')
+                                    @include('components.finish-form')
                                 </div>
                                 <div class="wizard-footer">
                                     <div class="pull-right">
                                         <input type='button' class='btn btn-next btn-fill btn-warning btn-wd btn--save' name='next' value='Avançar' />
-                                        <input type='button' class='btn btn-finish btn-fill btn-warning btn-wd btn--save' name='finish' value='Finalizar' />
+                                        <input type='button' class='btn btn-finish btn-fill btn-warning btn-wd' name='finish' value='Finalizar' />
                                     </div>
 
                                     <div class="pull-left">
@@ -81,6 +90,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             jQuery("#birthday").mask("99/99/9999");
             jQuery(".phone").mask('(99) 9999-99999');
+            jQuery('input[name="cep"]').mask('99999-999')
         })
     </script>
 
@@ -95,7 +105,8 @@
             max: jQuery.validator.format("Por favor, insira um valor menor ou igual a {0}."),
             min: jQuery.validator.format("Por favor, insira um valor maior ou igual a {0}."),
             onlytext: jQuery.validator.format("Este campo permite somente letras."),
-            birthday: jQuery.validator.format("Insira uma data valida.")
+            birthday: jQuery.validator.format("Insira uma data válida."),
+            number: jQuery.validator.format('Insira um numero válido.')
         });
 
         $.validator.addMethod('birthday', function (value, element) {
@@ -131,6 +142,8 @@
                     $(newOption).html(item.nome);
                     $(stateInput).append(newOption);
                 })
+
+                $(stateInput).val($('#state-sigla').val())
             }
 
             fillStates();
@@ -163,7 +176,7 @@
 
             const savePartialForm = async (container) => {
                 await sleep(1000)
-                let inputs = $(container).find('input, select');
+                let inputs = $(container).find(':input:not([type=hidden]), select');
                 let items = mapToJson(inputs)
                 const valid = isValid(inputs)
                 if(valid) {

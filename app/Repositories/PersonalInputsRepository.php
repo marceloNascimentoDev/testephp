@@ -22,6 +22,7 @@ class PersonalInputsRepository
         return $pets->delete();
     }
 
+
     public function store($inputs)
     {
         return $this->personalInput->create($inputs);
